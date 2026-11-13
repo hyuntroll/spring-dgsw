@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class ForbiddenWordCheckerTest {
 
@@ -56,7 +55,7 @@ class ForbiddenWordCheckerTest {
 
     @Test
     void 금칙어가_없을_때_validate_exception() {
-        assertThatThrownBy(() -> checker.validate("난 너를 사랑해")).doesNotThrowAnyException();
+        assertThatCode(() -> checker.validate("난 너를 사랑해")).doesNotThrowAnyException();
     }
 
 }
