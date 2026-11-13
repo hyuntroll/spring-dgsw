@@ -13,3 +13,9 @@ spring:
   h2:
     console:
       enabled: true
+
+forbidden-word:
+  enabled: true
+  words:
+    - 바보
+    - 멍청이
