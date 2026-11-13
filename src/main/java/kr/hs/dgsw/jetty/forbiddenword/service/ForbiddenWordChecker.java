@@ -1,6 +1,8 @@
 package kr.hs.dgsw.jetty.forbiddenword.service;
 
+import kr.hs.dgsw.jetty.common.exception.ApplicationException;
 import kr.hs.dgsw.jetty.forbiddenword.config.ForbiddenWordProperties;
+import kr.hs.dgsw.jetty.forbiddenword.exception.ForbiddenWordStatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,12 @@ public class ForbiddenWordChecker {
             }
         }
         return false;
+    }
+
+    public void validate(String text) {
+        if (containesForbiddenWords(text)) {
+            throw ApplicationException.of(ForbiddenWordStatusCode.FORBIDDEN_WORD_DETECTED);
+        }
     }
 
     private String normalize(String text) {
