@@ -1,25 +1,39 @@
 package kr.hs.dgsw.jetty.forbiddenword.service;
 
 import kr.hs.dgsw.jetty.common.exception.ApplicationException;
-import kr.hs.dgsw.jetty.forbiddenword.config.ForbiddenWordProperties;
+import kr.hs.dgsw.jetty.forbiddenword.entity.ForbiddenWord;
 import kr.hs.dgsw.jetty.forbiddenword.exception.ForbiddenWordStatusCode;
+import kr.hs.dgsw.jetty.forbiddenword.repository.ForbiddenWordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
-class ForbiddenWordCheckerTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class ForbiddenWordServiceTest {
 
-    private ForbiddenWordProperties properties;
-    private ForbiddenWordChecker checker;
+    @Mock
+    private ForbiddenWordRepository forbiddenWordRepository;
+
+    @InjectMocks
+    private ForbiddenWordService checker;
 
     @BeforeEach
     void setup() {
-        properties = new ForbiddenWordProperties();
-        properties.setWords(List.of("바보", "baka"));
-        checker = new ForbiddenWordChecker(properties);
+        given(forbiddenWordRepository.findAll()).willReturn(List.of(
+                ForbiddenWord.create("바보"),
+                ForbiddenWord.create("baka")
+        ));
     }
 
     @Test
@@ -37,13 +51,6 @@ class ForbiddenWordCheckerTest {
         assertThat(checker.containesForbiddenWords("이 바 보야")).isTrue();
         assertThat(checker.containesForbiddenWords("BaKa")).isTrue();
         assertThat(checker.containesForbiddenWords("B aK A")).isTrue();
-    }
-
-    @Test
-    void 검사_비활성화() {
-        properties.setEnabled(false);
-
-        assertThat(checker.containesForbiddenWords("바보야")).isFalse();
     }
 
     @Test
