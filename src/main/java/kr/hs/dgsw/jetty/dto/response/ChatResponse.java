@@ -1,4 +1,4 @@
-package kr.hs.dgsw.jetty.dto;
+package kr.hs.dgsw.jetty.dto.response;
 
 import kr.hs.dgsw.jetty.entity.Chat;
 

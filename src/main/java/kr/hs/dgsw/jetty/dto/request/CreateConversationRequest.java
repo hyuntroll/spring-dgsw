@@ -1,4 +1,4 @@
-package kr.hs.dgsw.jetty.controller;
+package kr.hs.dgsw.jetty.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

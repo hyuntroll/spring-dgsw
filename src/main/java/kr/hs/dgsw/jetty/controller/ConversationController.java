@@ -2,13 +2,17 @@ package kr.hs.dgsw.jetty.controller;
 
 import jakarta.validation.Valid;
 import kr.hs.dgsw.jetty.common.ApiResponse;
-import kr.hs.dgsw.jetty.dto.ChatResponse;
-import kr.hs.dgsw.jetty.dto.CreateConversationResponse;
+import kr.hs.dgsw.jetty.dto.request.ChatRequest;
+import kr.hs.dgsw.jetty.dto.request.CreateConversationRequest;
+import kr.hs.dgsw.jetty.dto.response.ChatResponse;
+import kr.hs.dgsw.jetty.dto.response.ConversationResponse;
+import kr.hs.dgsw.jetty.dto.response.CreateConversationResponse;
 import kr.hs.dgsw.jetty.service.ConversationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -16,6 +20,24 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConversationController {
     private final ConversationService conversationService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ConversationResponse>>> findAll() {
+        List<ConversationResponse> conversations = conversationService.getConversations();
+        return ResponseEntity.ok(
+                ApiResponse.of(conversations)
+        );
+    }
+
+    @GetMapping("/{conversationId}")
+    public ResponseEntity<ApiResponse<ConversationResponse>> findById(
+            @PathVariable UUID conversationId
+    ) {
+        ConversationResponse conversation = conversationService.getConversation(conversationId);
+        return ResponseEntity.ok(
+                ApiResponse.of(conversation)
+        );
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<CreateConversationResponse>> create(
@@ -26,13 +48,14 @@ public class ConversationController {
                 .body(ApiResponse.of(response));
     }
 
-    @PostMapping("/{conversationId}")
-    public ResponseEntity<ApiResponse<ChatResponse>> chat(
-            @PathVariable UUID conversationId,
-            @Valid @RequestBody ChatRequest request
+    @DeleteMapping("/{conversationId}")
+    public ResponseEntity<ApiResponse<Void>> deleteById(
+            @PathVariable UUID conversationId
     ) {
-        ChatResponse response = conversationService.sendMessage(conversationId, request.userText());
+        conversationService.deleteConversation(conversationId);
         return ResponseEntity.ok(
-                ApiResponse.of(response));
+                ApiResponse.ok()
+        );
     }
+
 }
