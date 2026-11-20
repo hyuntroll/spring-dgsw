@@ -1,6 +1,7 @@
 package kr.hs.dgsw.jetty.forbiddenword.service;
 
 import kr.hs.dgsw.jetty.common.exception.ApplicationException;
+import kr.hs.dgsw.jetty.forbiddenword.dto.request.ForbiddenWordRequest;
 import kr.hs.dgsw.jetty.forbiddenword.entity.ForbiddenWord;
 import kr.hs.dgsw.jetty.forbiddenword.exception.ForbiddenWordStatusCode;
 import kr.hs.dgsw.jetty.forbiddenword.repository.ForbiddenWordRepository;
@@ -16,7 +17,10 @@ import org.mockito.quality.Strictness;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -34,6 +38,26 @@ class ForbiddenWordServiceTest {
                 ForbiddenWord.create("바보"),
                 ForbiddenWord.create("baka")
         ));
+    }
+
+    @Test
+    void 이미_등록된_금칙어면_예외() {
+        given(forbiddenWordRepository.existsByWord("바보")).willReturn(true);
+
+        assertThatThrownBy(() -> checker.addWords(new ForbiddenWordRequest("바보")))
+                .isInstanceOf(ApplicationException.class)
+                .hasMessage(ForbiddenWordStatusCode.FORBIDDEN_WORD_ALREADY_EXISTS.getMessage());
+
+        verify(forbiddenWordRepository, never()).save(any());
+    }
+
+    @Test
+    void 새로운_금칙어면_저장() {
+        given(forbiddenWordRepository.existsByWord("멍청이")).willReturn(false);
+
+        checker.addWords(new ForbiddenWordRequest("멍청이"));
+
+        verify(forbiddenWordRepository).save(any(ForbiddenWord.class));
     }
 
     @Test
