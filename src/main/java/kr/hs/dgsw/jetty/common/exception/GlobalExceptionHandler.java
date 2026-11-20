@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
                 CommonStatusCode.INTERNAL_SERVER_ERROR.getStatus(),
                 CommonStatusCode.INTERNAL_SERVER_ERROR.getMessage()
         );
-
+        exception.printStackTrace();
         return ResponseEntity
                 .status(error.status())
                 .body(ApiResponse.error(error));
