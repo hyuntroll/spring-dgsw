@@ -44,6 +44,9 @@ public class ForbiddenWordServiceImpl implements ForbiddenWordService {
     @Override
     @Transactional
     public void addWords(ForbiddenWordRequest request) {
+        if (forbiddenWordRepository.existsByWord(request.word())) {
+            throw ApplicationException.of(ForbiddenWordStatusCode.FORBIDDEN_WORD_ALREADY_EXISTS);
+        }
         forbiddenWordRepository.save(ForbiddenWord.create(request.word()));
     }
 
