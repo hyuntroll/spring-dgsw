@@ -14,3 +14,13 @@ spring:
   h2:
     console:
       enabled: true
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        model: gpt-5-mini
+
+jetty:
+  chat:
+    history-token-budget: 1000

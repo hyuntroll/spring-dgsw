@@ -26,7 +26,7 @@ class ForbiddenWordServiceTest {
     private ForbiddenWordRepository forbiddenWordRepository;
 
     @InjectMocks
-    private ForbiddenWordService checker;
+    private ForbiddenWordServiceImpl checker;
 
     @BeforeEach
     void setup() {

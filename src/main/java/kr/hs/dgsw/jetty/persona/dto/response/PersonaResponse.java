@@ -1,13 +1,10 @@
 package kr.hs.dgsw.jetty.persona.dto.response;
 
-import jakarta.validation.constraints.NotNull;
 import kr.hs.dgsw.jetty.persona.entity.Persona;
 import kr.hs.dgsw.jetty.persona.entity.Personality;
 import kr.hs.dgsw.jetty.persona.entity.SpeechStyle;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
 @Getter
 @Builder

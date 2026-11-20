@@ -2,9 +2,11 @@ package kr.hs.dgsw.jetty.persona.service.impl;
 
 import kr.hs.dgsw.jetty.common.exception.ApplicationException;
 import kr.hs.dgsw.jetty.common.exception.CommonStatusCode;
+import kr.hs.dgsw.jetty.conversation.repository.ConversationRepository;
 import kr.hs.dgsw.jetty.persona.dto.request.PersonaRequest;
 import kr.hs.dgsw.jetty.persona.dto.response.PersonaResponse;
 import kr.hs.dgsw.jetty.persona.entity.Persona;
+import kr.hs.dgsw.jetty.persona.exception.PersonaStatusCode;
 import kr.hs.dgsw.jetty.persona.repository.PersonaRepository;
 import kr.hs.dgsw.jetty.persona.service.PersonaService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 public class PersonaServiceImpl implements PersonaService {
 
     private final PersonaRepository repository;
+    private final ConversationRepository conversationRepository;
 
     @Override
     @Transactional
@@ -67,17 +70,23 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     @Transactional
     public void deletePersona(Long personaId) {
-        repository.delete(findPersona(personaId));
+        Persona persona = findPersona(personaId);
+
+        if (conversationRepository.existsByPersonaPersonaId(personaId)) {
+            throw new ApplicationException(PersonaStatusCode.PERSONA_IN_USE);
+        }
+
+        repository.delete(persona);
     }
 
     private Persona findPersona(Long personaId) {
         return repository.findById(personaId)
-                .orElseThrow(() -> ApplicationException.of(CommonStatusCode.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(PersonaStatusCode.PERSONA_NOT_FOUND));
     }
 
     private void validateLengths(PersonaRequest request) {
         if (request.getName().length() > 10 || request.getGreeting().length() > 200) {
-            throw ApplicationException.of(CommonStatusCode.BAD_REQUEST);
+            throw new ApplicationException(CommonStatusCode.BAD_REQUEST);
         }
     }
 }
