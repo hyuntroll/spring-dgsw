@@ -2,14 +2,13 @@ package kr.hs.dgsw.jetty.persona.entity;
 
 import jakarta.persistence.*;
 import kr.hs.dgsw.jetty.common.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "persona")
 public class Persona extends BaseEntity {
@@ -30,11 +29,4 @@ public class Persona extends BaseEntity {
 
     @Column(name = "greeting", length = 200, nullable = false)
     private String greeting;
-
-    public Persona(String name, Personality personality, SpeechStyle speechStyle, String greeting) {
-        this.name = name;
-        this.personality = personality;
-        this.speechStyle = speechStyle;
-        this.greeting = greeting;
-    }
 }
