@@ -20,7 +20,7 @@ public class PersonaResponse {
 
     public static PersonaResponse from(Persona persona) {
         return PersonaResponse.builder()
-                .personaId(persona.getPersonaId())
+                .personaId(persona.getId())
                 .name(persona.getName())
                 .personality(persona.getPersonality())
                 .speechStyle(persona.getSpeechStyle())

@@ -2,6 +2,7 @@ package kr.hs.dgsw.jetty.conversation.entity;
 
 import jakarta.persistence.*;
 import kr.hs.dgsw.jetty.common.BaseEntity;
+import kr.hs.dgsw.jetty.persona.entity.Persona;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,14 +20,15 @@ public class Conversation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private Long personaId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "persona_id", nullable = false)
+    private Persona persona;
 
-    private Conversation(Long personaId) {
-        this.personaId = Objects.requireNonNull(personaId);
+    private Conversation(Persona persona) {
+        this.persona = Objects.requireNonNull(persona);
     }
 
-    public static Conversation create(Long personaId) {
-        return new Conversation(personaId);
+    public static Conversation create(Persona persona) {
+        return new Conversation(persona);
     }
 }

@@ -1,9 +1,12 @@
 package kr.hs.dgsw.jetty.conversation.dto.response;
 
 import kr.hs.dgsw.jetty.conversation.entity.Conversation;
+import lombok.Builder;
 
 import java.util.UUID;
 
+
+@Builder
 public record CreateConversationResponse(
         UUID conversationId
 ) {
