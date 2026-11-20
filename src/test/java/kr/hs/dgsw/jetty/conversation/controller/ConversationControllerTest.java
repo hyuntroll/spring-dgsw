@@ -1,9 +1,6 @@
 package kr.hs.dgsw.jetty.conversation.controller;
 
-import kr.hs.dgsw.jetty.conversation.dto.request.CreateConversationRequest;
-import kr.hs.dgsw.jetty.conversation.dto.response.ConversationResponse;
 import kr.hs.dgsw.jetty.conversation.dto.response.CreateConversationResponse;
-import kr.hs.dgsw.jetty.conversation.repository.ConversationRepository;
 import kr.hs.dgsw.jetty.conversation.service.ConversationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;

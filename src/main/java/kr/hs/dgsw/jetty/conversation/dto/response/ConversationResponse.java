@@ -18,7 +18,7 @@ public record ConversationResponse(
         Persona persona = entity.getPersona();
         return new ConversationResponse(
                 entity.getId(),
-                persona.getId(),
+                persona.getPersonaId(),
                 persona.getName(),
                 persona.getPersonality().getDescription(),
                 persona.getSpeechStyle().getDescription()

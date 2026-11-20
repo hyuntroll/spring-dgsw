@@ -26,7 +26,7 @@ public class Chat extends BaseEntity {
     private Conversation conversation;
 
     @Lob
-    @Column(nullable = false)
+    @Column
     private String userText;
 
     @Lob
@@ -35,11 +35,15 @@ public class Chat extends BaseEntity {
 
     private Chat(Conversation conversation, String userText, String replyText) {
         this.conversation = Objects.requireNonNull(conversation);
-        this.userText = Objects.requireNonNull(userText);
+        this.userText = userText;
         this.replyText = Objects.requireNonNull(replyText);
     }
 
     public static Chat create(Conversation conversation, String userText, String replyText) {
-        return new Chat(conversation, userText, replyText);
+        return new Chat(conversation, Objects.requireNonNull(userText), replyText);
+    }
+
+    public static Chat greeting(Conversation conversation, String greeting) {
+        return new Chat(conversation, null, greeting);
     }
 }

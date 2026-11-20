@@ -4,7 +4,6 @@ import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingType;
 import kr.hs.dgsw.jetty.common.exception.ApplicationException;
-import kr.hs.dgsw.jetty.common.exception.CommonStatusCode;
 import kr.hs.dgsw.jetty.chat.dto.response.ChatResponse;
 import kr.hs.dgsw.jetty.chat.entity.Chat;
 import kr.hs.dgsw.jetty.conversation.entity.Conversation;
@@ -47,12 +46,13 @@ public class ChatServiceImpl implements ChatService {
                         말투: %s
                         
                         - 한국어로 자연스럽게 대답하고, 캐릭터의 성격과 말투를 유지해.
-                        - 사용자의 최 메시지와 앞선 대화 맥락을 참고해서 답해.
-                        - 질문에는 먼저 대답하고, 필요한 경우 공감이나 질문을 덧붙여.
+                        - 사용자의 최신 메시지와 앞선 대화 맥락을 참고해서 답해.
+                        - 이전에 무슨 말을 했는지 물으면 제공된 대화 내역에서 확인해 답해.
                         - 기본적으로 1~3 문장으로 답해.
                         - 이전에 무슨 말을 했는 물으면 제공된 대화 내역에서 확인해 답해
                         
                         """;
+
     private static final Encoding ENCODING = Encodings.newDefaultEncodingRegistry()
             .getEncoding(EncodingType.O200K_BASE);
 
@@ -72,7 +72,8 @@ public class ChatServiceImpl implements ChatService {
         List<Message> messages = new ArrayList<>();
 
         for (Chat chat : selectHistory(recentChats)) {
-            messages.add(new UserMessage(chat.getUserText()));
+            if (chat.getUserText() != null)
+                messages.add(new UserMessage(chat.getUserText()));
             messages.add(new AssistantMessage(chat.getReplyText()));
         }
 
@@ -97,7 +98,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatResponse> getMessages(UUID conversationId) {
         conversationRepository.findById(conversationId)
-                .orElseThrow(() -> new ApplicationException(CommonStatusCode.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(ConversationStatusCode.CONVERSATION_NOT_FOUND));
 
         return chatRepository.findByConversationIdOrderByCreatedAtDescIdDesc(conversationId)
                 .stream()
@@ -110,8 +111,10 @@ public class ChatServiceImpl implements ChatService {
         int remainingTokens = historyTokenBudget;
 
         for (Chat chat : newestFirst) {
-            int turnTokens = ENCODING.countTokensOrdinary(chat.getUserText())
-                    + ENCODING.countTokensOrdinary(chat.getReplyText());
+            int userTokens = chat.getUserText() == null
+                    ? 0
+                    : ENCODING.countTokensOrdinary(chat.getUserText());
+            int turnTokens = userTokens + ENCODING.countTokensOrdinary(chat.getReplyText());
 
             if (turnTokens > remainingTokens) {
                 break;

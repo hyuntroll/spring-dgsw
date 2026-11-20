@@ -47,13 +47,11 @@ public class ConversationController {
     }
 
     @DeleteMapping("/{conversationId}")
-    public ResponseEntity<ApiResponse<Void>> deleteById(
+    public ResponseEntity<Void> deleteById(
             @PathVariable UUID conversationId
     ) {
         conversationService.deleteConversation(conversationId);
-        return ResponseEntity.ok(
-                ApiResponse.ok()
-        );
+        return ResponseEntity.noContent().build();
     }
 
 }
