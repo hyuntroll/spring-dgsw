@@ -7,10 +7,8 @@ import kr.hs.dgsw.jetty.persona.dto.response.PersonaResponse;
 import kr.hs.dgsw.jetty.persona.service.PersonaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,26 +20,30 @@ public class PersonaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonaResponse createPersona(@Valid @RequestBody PersonaRequest request) {
-        return personaService.createPersona(request);
+    public ApiResponse<PersonaResponse> createPersona(
+            @Valid @RequestBody PersonaRequest request
+    ) {
+        return ApiResponse.of(personaService.createPersona(request));
     }
 
     @GetMapping
-    public List<PersonaResponse> getPersonas() {
-        return personaService.getPersonas();
+    public ApiResponse<List<PersonaResponse>> getPersonas() {
+        return ApiResponse.of(personaService.getPersonas());
     }
 
     @GetMapping("/{personaId}")
-    public PersonaResponse getPersona(@PathVariable Long personaId) {
-        return personaService.getPersona(personaId);
+    public ApiResponse<PersonaResponse> getPersona(
+            @PathVariable Long personaId
+    ) {
+        return ApiResponse.of(personaService.getPersona(personaId));
     }
 
     @PutMapping("/{personaId}")
-    public PersonaResponse updatePersona(
+    public ApiResponse<PersonaResponse> updatePersona(
             @PathVariable Long personaId,
             @Valid @RequestBody PersonaRequest request
     ) {
-        return personaService.updatePersona(personaId, request);
+        return ApiResponse.of(personaService.updatePersona(personaId, request));
     }
 
     @DeleteMapping("/{personaId}")

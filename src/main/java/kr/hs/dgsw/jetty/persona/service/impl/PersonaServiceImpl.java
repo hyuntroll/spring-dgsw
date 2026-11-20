@@ -22,6 +22,8 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     @Transactional
     public PersonaResponse createPersona(PersonaRequest request) {
+        validateLengths(request);
+
         Persona persona = Persona.builder()
                 .name(request.getName())
                 .personality(request.getPersonality())
